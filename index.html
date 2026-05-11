@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split·Tip – Smart Bill Splitter & Tip Calculator</title>
+    <meta name="description" content="Split·Tip is a fast, elegant bill-splitting and tip calculator for Android. Split bills instantly, save history, and share results. Download now on Google Play.">
+    <meta name="author" content="FourDevs">
+    <meta name="theme-color" content="#006B5C">
+    <meta property="og:title" content="Split·Tip – Smart Bill Splitter & Tip Calculator">
+    <meta property="og:description" content="Split bills instantly with any tip percentage. Save history, share results, and enjoy dark mode. Free on Google Play.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://fourdevs.github.io/splittip/">
+    <meta name="twitter:card" content="summary_large_image">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #006B5C;
+            --primary-container: #00BFA5;
+            --on-primary: #FFFFFF;
+            --surface: #F4FBF7;
+            --surface-container: #EEF5F1;
+            --on-surface: #161D1B;
+            --on-surface-variant: #3C4A46;
+            --header-height: 72px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--header-height);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--surface);
+            color: var(--on-surface);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ── Navigation ────────────────────── */
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(244, 251, 247, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 107, 92, 0.08);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-brand i {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--on-surface-variant);
+            font-weight: 500;
+            font-size: 0.925rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* ── Hero ─────────────────────────── */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 100px;
+            display: flex;
+            align-items: center;
+            gap: 64px;
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .hero-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 191, 165, 0.12);
+            color: var(--primary);
+            font-weight: 600;
+            font-size: 0.825rem;
+            padding: 6px 16px;
+            border-radius: 100px;
+            margin-bottom: 24px;
+        }
+
+        .hero-badge i {
+            font-size: 0.75rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            color: var(--on-surface);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--on-surface-variant);
+            max-width: 480px;
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .btn-play {
+            display: inline-flex;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-play img {
+            height: 60px;
+            width: auto;
+            display: block;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--surface-container);
+            color: var(--on-surface);
+            font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 107, 92, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .hero-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .phone-mockup {
+            width: 280px;
+            height: 560px;
+            background: linear-gradient(180deg, #1C1B1B 0%, #2A2A2A 100%);
+            border-radius: 40px;
+            padding: 16px;
+            position: relative;
+            box-shadow: 0 36px 80px rgba(0, 107, 92, 0.2), 0 0 0 2px rgba(255,255,255,0.05) inset;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--surface);
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 20px;
+        }
+
+        .phone-screen .mini-icon {
+            font-size: 2.5rem;
+            color: var(--primary-container);
+            margin-bottom: 12px;
+        }
+
+        .phone-screen .mini-result {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .phone-screen .mini-sub {
+            font-size: 0.8rem;
+            color: var(--on-surface-variant);
+            margin-top: 4px;
+        }
+
+        .phone-screen .mini-bar {
+            width: 80%;
+            height: 6px;
+            background: var(--surface-container);
+            border-radius: 3px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+
+        .phone-screen .mini-bar-fill {
+            width: 65%;
+            height: 100%;
+            background: var(--primary-container);
+            border-radius: 3px;
+        }
+
+        .phone-screen .mini-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .phone-screen .mini-chip {
+            padding: 6px 14px;
+            border-radius: 100px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: var(--surface-container);
+            color: var(--on-surface-variant);
+        }
+
+        .phone-screen .mini-chip.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero-glow {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 191, 165, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* ── Features ─────────────────────── */
+        .section {
+            padding: 100px 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 64px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            color: var(--on-surface-variant);
+            font-size: 1.05rem;
+        }
+
+        .features-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 28px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 16px 40px rgba(0,0,0,0.07);
+        }
+
+        .feature-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon.green {
+            background: rgba(0, 191, 165, 0.15);
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--on-surface-variant);
+            font-size: 0.925rem;
+            line-height: 1.6;
+        }
+
+        /* ── CTA Banner ───────────────────── */
+        .cta-banner {
+            max-width: 1100px;
+            margin: 0 auto 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, #004d42 100%);
+            border-radius: 24px;
+            padding: 64px 48px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            pointer-events: none;
+        }
+
+        .cta-banner h2 {
+            font-size: clamp(1.75rem, 3.5vw, 2.25rem);
+            font-weight: 700;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .cta-banner p {
+            opacity: 0.85;
+            font-size: 1.05rem;
+            margin-bottom: 32px;
+            position: relative;
+        }
+
+        .cta-banner .btn-play {
+            position: relative;
+        }
+
+        /* ── Footer ───────────────────────── */
+        .footer {
+            border-top: 1px solid rgba(0, 107, 92, 0.08);
+            padding: 32px 24px;
+            text-align: center;
+            color: var(--on-surface-variant);
+            font-size: 0.875rem;
+        }
+
+        .footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        /* ── Responsive ───────────────────── */
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column-reverse;
+                padding: 40px 24px 64px;
+                gap: 40px;
+                text-align: center;
+                min-height: auto;
+            }
+
+            .hero p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .phone-mockup {
+                width: 220px;
+                height: 440px;
+                border-radius: 32px;
+                padding: 12px;
+            }
+
+            .phone-screen {
+                border-radius: 22px;
+                padding: 16px 14px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .cta-banner {
+                padding: 48px 24px;
+                border-radius: 20px;
+            }
+
+            .section {
+                padding: 64px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .btn-play img {
+                height: 48px;
+            }
+
+            .btn-secondary {
+                padding: 12px 20px;
+                font-size: 0.875rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .phone-mockup {
+                width: 180px;
+                height: 360px;
+                border-radius: 28px;
+                padding: 10px;
+            }
+
+            .phone-screen {
+                border-radius: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════ NAVIGATION ═══════════ -->
+    <nav class="nav" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a href="#" class="nav-brand">
+                <i class="fa-solid fa-receipt"></i> Split·Tip
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#privacy">Privacy</a></li>
+                <li><a href="#download">Download</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero" aria-labelledby="hero-heading">
+        <div class="hero-text">
+            <div class="hero-badge">
+                <i class="fa-solid fa-circle-check"></i> Free on Google Play
+            </div>
+            <h1 id="hero-heading">Split bills <span>instantly</span>.<br>Tip effortlessly.</h1>
+            <p>
+                The smart way to split restaurant bills, shared expenses, and group payments.
+                Choose any tip percentage — or enter a custom amount — and see exactly what
+                everyone owes in seconds.
+            </p>
+            <div class="hero-buttons">
+                <a href="https://play.google.com/store/apps/details?id=com.fourdevs.splittip"
+                   class="btn-play"
+                   target="_blank"
+                   rel="noopener"
+                   aria-label="Get Split·Tip on Google Play">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                         alt="Get it on Google Play"
+                         width="180"
+                         height="60">
+                </a>
+                <a href="#features" class="btn-secondary">
+                    <i class="fa-solid fa-arrow-down"></i> Learn more
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+            <div class="hero-glow"></div>
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <i class="fa-solid fa-calculator mini-icon"></i>
+                    <span class="mini-result">$12.50</span>
+                    <span class="mini-sub">Total per person</span>
+                    <div class="mini-bar"><div class="mini-bar-fill"></div></div>
+                    <div class="mini-chips">
+                        <span class="mini-chip active">15%</span>
+                        <span class="mini-chip">18%</span>
+                        <span class="mini-chip">20%</span>
+                        <span class="mini-chip">Custom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ FEATURES ═══════════ -->
+    <section class="section" id="features" aria-labelledby="features-heading">
+        <div class="section-header">
+            <h2 id="features-heading">Everything you need to split bills fairly</h2>
+            <p>No accounts, no sign‑up, no fuss. All your data stays on your device.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-bolt"></i></div>
+                <h3>Instant Calculation</h3>
+                <p>Enter the bill, pick a tip, set the number of people — results appear instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-hand-holding-dollar"></i></div>
+                <h3>Flat Tip or Percentage</h3>
+                <p>Choose a quick percentage (10%, 15%, 20%, etc.) or enter a custom flat tip amount.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <h3>Bill History</h3>
+                <p>Save your splits with optional restaurant names. Browse history grouped by month.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-share-nodes"></i></div>
+                <h3>Share Results</h3>
+                <p>Send a clean summary to friends via any messaging app in one tap.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-moon"></i></div>
+                <h3>Dark Mode</h3>
+                <p>Beautiful dark theme that follows your system setting — or toggle it manually.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon green"><i class="fa-solid fa-globe"></i></div>
+                <h3>Multi‑Currency</h3>
+                <p>Switch between $, €, £, and ¥. Set your preferred default in settings.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ PRIVACY HIGHLIGHT ═══════════ -->
+    <section class="section" id="privacy" aria-labelledby="privacy-heading" style="background: var(--surface-container);">
+        <div class="section-header">
+            <h2 id="privacy-heading">Your privacy matters</h2>
+            <p>Split·Tip is designed to keep your data local. Your bill history never leaves your phone
+               unless you choose to share it. The app uses Google AdMob for advertising; AdMob may collect
+               device identifiers and coarse location to serve relevant ads. You can reset your Advertising ID
+               or opt out of personalised ads in your device settings.</p>
+        </div>
+    </section>
+
+    <!-- ═══════════ CTA BANNER ═══════════ -->
+    <section id="download" aria-labelledby="cta-heading">
+        <div class="cta-banner">
+            <h2 id="cta-heading">Ready to simplify your bill splitting?</h2>
+            <p>Free to download. No accounts. Instant results.</p>
+            <a href="https://play.google.com/store/apps/details?id=com.fourdevs.splittip"
+               class="btn-play"
+               target="_blank"
+               rel="noopener"
+               aria-label="Get Split·Tip on Google Play">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+                     alt="Get it on Google Play"
+                     width="200"
+                     height="77">
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="https://play.google.com/store/apps/details?id=com.fourdevs.splittip" target="_blank" rel="noopener">Google Play</a>
+            <a href="mailto:support@splittip.app">Contact Support</a>
+        </div>
+        <p>&copy; 2026 Split·Tip. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
